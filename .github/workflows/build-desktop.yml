@@ -38,3 +38,14 @@ jobs:
             packaging/electron/dist/*.AppImage
             packaging/electron/dist/*.deb
             packaging/electron/dist/*.zip
+
+      # On version tags, publish a GitHub Release with the installers attached.
+      - name: Publish GitHub Release (on tags)
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true
+          files: |
+            packaging/electron/dist/*.exe
+            packaging/electron/dist/*.AppImage
+            packaging/electron/dist/*.deb

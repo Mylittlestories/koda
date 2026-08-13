@@ -194,6 +194,20 @@ const assert = (cond, msg) => { if(!cond){ throw new Error('ASSERT FAIL: '+msg);
   assert(ev('CONCEPT_COUNT') === 8, '8 concepts defined');
   w.go('settings');
   assert(ev('document.getElementById("learning-log") ? document.getElementById("learning-log").innerHTML.includes("rhythm") : false'), 'learning log shows in settings');
+
+  // ---------- EDUCATION: journal + learn-more links ----------
+  w.go('home');
+  const jr = ev("document.getElementById('learning-journal') ? document.getElementById('learning-journal').innerHTML : ''");
+  assert(jr.includes('Concepts unlocked'), 'home shows learning journal');
+  assert(jr.includes('concept-chip-btn'), 'journal renders concept chips');
+  assert(ev("typeof conceptLearnMore === 'function' && typeof renderLearningJournal === 'function'"), 'learn-more + journal functions exist');
+  assert(ev("CONCEPT_LINKS.sound.lesson === 'sound' && CONCEPT_LINKS.mem.practice === 'memory'"), 'concept→lesson/practice links defined');
+  ev("conceptLearnMore('sound');");
+  await sleep(200);
+  assert(ev('currentView') === 'learn' && ev('LEARN.lesson.id') === 'sound', 'learn-more opens the matching lesson');
+  ev("conceptLearnMore('mem');");
+  await sleep(200);
+  assert(ev('currentView') === 'practice', 'learn-more opens practice for memory concept');
   console.log('\nALL V7 SMOKE TESTS PASSED ✔ (' + errors.length + ' console errors)');
   process.exit(0);
 })().catch(e => { console.error(e); process.exit(1); });

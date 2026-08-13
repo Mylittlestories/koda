@@ -26,6 +26,10 @@ Koda is a single-page app (`index.html` — no build step, no dependencies, no t
 
 **Learning systems:** XP + levels, **21 badges**, guided missions, per-lesson progress, a **daily challenge** (new goal each day, +15 XP), a **🔥 learning streak**, a rotating mascot tip, and synthesized sound effects (WebAudio — no assets).
 
+**🧠 Learning Journal:** solving puzzles and finishing lessons unlocks 8 concepts (Sequencing, Patterns, Debugging…) — see them on the Home page with a progress bar and tap any one to **learn more** (deep-links to the matching lesson or practice game).
+
+**🚀 GitHub-ready:** the folder is a real git repo — see [docs/GITHUB-SETUP.md](docs/GITHUB-SETUP.md) for the copy-paste push + release commands (CI builds installers and deploys the web app to Pages automatically).
+
 **Share your creations:** export any project (code blocks + movie timeline + photo art) as a portable **`.koda` file** — from Code, Settings or My Projects — or grab **📦 Export all (.zip)** to download every project + gallery photo in one dependency-free ZIP. The gallery shows **thumbnails** of each creation, and the **Showcase** has 8 sample projects.
 
 **💾 Auto-save:** your code blocks, movie timeline and photo edits — **including the photo's actual pixels** (size-guarded so it can never blow storage) — are saved automatically (debounced + every 15s + on tab close) and restored when you come back.
@@ -84,10 +88,12 @@ koda/
 ├── CHANGELOG.md
 ├── LICENSE               # MIT
 ├── docs/
+│   ├── GITHUB-SETUP.md   # push + release, one copy-paste
 │   ├── koda-logo.png
 │   ├── ARCHITECTURE.md   # how the app is organized, where to add things
 │   ├── CONTRIBUTING.md
 │   └── smoke-test.js     # 30+ behavior assertions (node + jsdom, dev-only)
+├── scripts/release.sh  # build & verify everything locally
 └── packaging/
     ├── electron/         # desktop app wrapper (main.js, package.json)
     ├── pwa/              # manifest + service worker + icons (installable/offline)
