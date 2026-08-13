@@ -174,6 +174,26 @@ const assert = (cond, msg) => { if(!cond){ throw new Error('ASSERT FAIL: '+msg);
   assert(ev('SHOWCASE.length') === 8, 'showcase has 8 projects');
   assert(d.querySelector('#lib-grid').innerHTML.includes('Open'), 'library renders');
 
+
+  // ---------- QUALITY: redraw bug, storage, a11y, art, concepts ----------
+  assert(!html.includes('alive || true'), 'stage redraw bug fixed (no `alive || true`)');
+  assert(html.includes('Kano-inspired learning playground'), 'title is Kano-inspired, not "alternative"');
+  assert(html.includes('aria-label="Main navigation"'), 'nav has aria-label');
+  assert(html.includes('id="music-btn"') && html.includes('aria-label="Toggle enchanted music"'), 'music button accessible');
+  assert(html.includes('class="skip" href="#app"'), 'skip link present');
+  assert(html.includes('prefers-reduced-motion: reduce'), 'reduced-motion respected');
+  assert(html.includes('role="img" aria-label="Adventure map"'), 'adventure canvas has alt text');
+  assert(html.includes('aria-live="polite"'), 'live regions for toasts');
+  assert(ev('typeof ART.forest === "function" && typeof ART.fox === "function"'), 'art pass functions present');
+  assert(ev('store.set("koda.test", {ok:1})') === true, 'store.set returns success');
+  assert(typeof ev('store.bytesUsed()') === 'number' && ev('store.bytesUsed()') >= 0, 'storage usage measurable');
+  ev('store.del("koda.test");');
+  assert(ev('unlockConcept("sound")') === true, 'concept unlock works');
+  assert(ev('state.concepts.includes("sound")'), 'concept recorded');
+  assert(ev('document.getElementById("learning-log") ? document.getElementById("learning-log").innerHTML.includes("rhythm") : false'), 'learning log renders concepts');
+  assert(ev('CONCEPT_COUNT') === 8, '8 concepts defined');
+  w.go('settings');
+  assert(ev('document.getElementById("learning-log") ? document.getElementById("learning-log").innerHTML.includes("rhythm") : false'), 'learning log shows in settings');
   console.log('\nALL V7 SMOKE TESTS PASSED ✔ (' + errors.length + ' console errors)');
   process.exit(0);
 })().catch(e => { console.error(e); process.exit(1); });

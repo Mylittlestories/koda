@@ -81,6 +81,7 @@ Koda stays true to Kano's core ideas: **learn by making**, **progress you can se
 koda/
 ├── index.html            # the entire app (HTML + CSS + JS, zero dependencies)
 ├── README.md
+├── CHANGELOG.md
 ├── LICENSE               # MIT
 ├── docs/
 │   ├── koda-logo.png
