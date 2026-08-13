@@ -1,0 +1,40 @@
+name: Build Koda Desktop (Windows + Linux)
+
+on:
+  workflow_dispatch:            # manual trigger
+  push:
+    tags: [ 'v*' ]              # automatic on version tags
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ ubuntu-latest, windows-latest ]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install deps
+        working-directory: packaging/electron
+        run: npm ci
+
+      - name: Build installers
+        working-directory: packaging/electron
+        run: npm run dist
+
+      - name: Smoke-test the app (jsdom)
+        run: npm install jsdom --no-fund --no-audit && node docs/smoke-test.js
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: koda-${{ matrix.os }}
+          path: |
+            packaging/electron/dist/*.exe
+            packaging/electron/dist/*.AppImage
+            packaging/electron/dist/*.deb
+            packaging/electron/dist/*.zip

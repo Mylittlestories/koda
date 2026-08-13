@@ -1,0 +1,17 @@
+{
+  "name": "Koda — Learn by Making",
+  "short_name": "Koda",
+  "description": "A friendly open-source learning playground: code games, edit photos, direct movies and discover how the digital world works.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#6d5cff",
+  "theme_color": "#6d5cff",
+  "lang": "en",
+  "author": "DRVsoft",
+  "copyright": "© 2026 DRVsoft",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}

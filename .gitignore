@@ -1,0 +1,14 @@
+# node / build outputs
+node_modules/
+packaging/electron/node_modules/
+packaging/electron/dist/
+packaging/electron/app/
+packaging/electron/package-lock.json
+
+# OS cruft
+.DS_Store
+Thumbs.db
+
+# editor
+.idea/
+.vscode/

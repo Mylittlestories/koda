@@ -1,0 +1,29 @@
+{
+  "name": "koda-desktop",
+  "productName": "Koda",
+  "version": "1.0.0",
+  "description": "Koda — learn by making. A friendly open-source Kano-style learning playground (code, art, movies, knowledge).",
+  "author": "DRVsoft <drvsoft@example.org>",
+  "homepage": "https://github.com/koda/koda",
+  "license": "MIT",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dist": "node prepare.js && electron-builder",
+    "test": "node prepare.js && KODA_TEST=1 electron . --no-sandbox"
+  },
+  "build": {
+    "appId": "org.koda.learn",
+    "productName": "Koda",
+    "files": ["main.js", "preload.js", "app/**"],
+    "directories": { "output": "dist" },
+    "copyright": "Copyright © 2026 DRVsoft",
+    "win": { "target": "nsis", "icon": "build/icon.ico" },
+    "mac": { "target": "dmg", "category": "public.app-category.education", "icon": "build/icon.png" },
+    "linux": { "target": ["AppImage", "deb"], "category": "Education", "icon": "build/icon.png" }
+  },
+  "devDependencies": {
+    "electron": "^31.0.0",
+    "electron-builder": "^24.13.3"
+  }
+}
