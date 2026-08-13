@@ -42,7 +42,7 @@ Koda is a single-page app (`index.html` — no build step, no dependencies, no t
 
 **💾 Auto-save:** your code blocks, movie timeline and photo edits — **including the photo's actual pixels** (size-guarded so it can never blow storage) — are saved automatically (debounced + every 15s + on tab close) and restored when you come back.
 
-**🎵 Enchanted music:** a soft magical soundtrack (WebAudio, no files) starts on your first tap — and it's **region-aware**: the Forest plays a bright pentatonic tune, the Caverns a deep mysterious one, the Movie Studio a sparkly theme. Toggle anytime with the 🎵 button or in Settings.
+**🎵 Adventure music:** a soft magical soundtrack (WebAudio, no files) starts on your first tap — and it's **region-aware**: the Forest plays a bright pentatonic tune, the Caverns a deep mysterious one, the Movie Studio a sparkly theme. Toggle anytime with the 🎵 button or in Settings.
 
 ---
 
@@ -132,7 +132,7 @@ node docs/smoke-test.js      # 2) boots the app, drives every module, 50+ assert
 - [x] **Project gallery** — My Projects page + thumbnails + 8 Showcase samples is in the app today
 - [x] **Second adventure region** — Crystal Caverns unlocks after the forest
 - [x] **Auto-save** — workspace (code/movie/photo) auto-saved & restored
-- [x] **Enchanted music** — procedural WebAudio soundtrack with a toggle
+- [x] **Adventure music** — procedural WebAudio soundtrack with a toggle
 - [ ] **Photo Lab** — crop, rotate, shape stamps, blur/tilt-shift filters
 - [ ] **Movie Studio** — audio tracks, transitions (fade/dissolve), green-screen keying
 - [x] **More lessons** — robotics, digital art & the internet are in; space tech next

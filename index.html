@@ -313,7 +313,7 @@ body.night .storage-banner{background:#3a2f1e;color:#ffd166}
   <nav class="nav" id="nav" aria-label="Main navigation"></nav>
   <div class="top-right">
     <div class="pill-xp"><span class="star">⭐</span><span id="nav-xp">0 XP</span></div>
-    <button class="iconbtn" id="music-btn" onclick="toggleMusic()" title="Enchanted music" aria-label="Toggle enchanted music" aria-pressed="true">🎵</button>
+    <button class="iconbtn" id="music-btn" onclick="toggleMusic()" title="Adventure music" aria-label="Toggle adventure music" aria-pressed="true">🎵</button>
     <div class="avatar-big" id="nav-avatar" title="Your profile" onclick="go('settings')" role="button" tabindex="0" aria-label="Open settings" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();go('settings')}" style="cursor:pointer">🦊</div>
   </div>
 </header>
@@ -493,7 +493,7 @@ body.night .storage-banner{background:#3a2f1e;color:#ffd166}
         <div class="field"><label>Avatar</label><div class="avatar-grid" id="avatar-grid"></div></div>
         <div class="field"><label>Sound effects</label><button class="switch on" id="set-sound" onclick="toggleSound()"></button></div>
         <div class="field"><label>Night mode</label><button class="switch" id="set-night" onclick="toggleNight()"></button></div>
-        <div class="field"><label>Enchanted music</label><button class="switch" id="set-music" onclick="toggleMusic()"></button></div>
+        <div class="field"><label>Adventure music</label><button class="switch" id="set-music" onclick="toggleMusic()"></button></div>
       </div>
       <div class="panel">
         <h3>📦 Progress</h3>
@@ -773,7 +773,8 @@ function go(v) {
   if (v === 'adventure') ADV.onShow();
   if (v === 'projects') renderProjects();
   if (v === 'settings') renderSettings();
-  musicSetPattern(currentView === 'adventure' ? (ADV.region === 'cavern' ? 'cavern' : ADV.region === 'sky' ? 'sky' : 'forest') : currentView === 'movie' ? 'movie' : 'home');
+  if (v === 'adventure') { musicSetPattern(ADV.region === 'cavern' ? 'cavern' : ADV.region === 'sky' ? 'sky' : 'forest'); startMusic(); }
+  else stopMusic();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
@@ -3344,7 +3345,7 @@ function restoreWorkspace() {
    ============================================================ */
 const MUSIC = {
   on: state.music !== false,
-  ctx: null, timer: null, step: 0, drone: null, pattern: 'home'
+  ctx: null, timer: null, step: 0, drone: null, pattern: 'forest'
 };
 function musicCtx() {
   if (MUSIC.ctx) return MUSIC.ctx;
@@ -3354,12 +3355,18 @@ function musicCtx() {
   } catch (e) { MUSIC.ctx = null; }
   return MUSIC.ctx;
 }
+/* Adventure soundtrack — one adventurous theme per region.
+   Each pattern: melody (lead), bass (low pulse), drums (1 = hit on that step), tempo (ms/step). */
 const MUSIC_PATTERNS = {
-  home:   [523.25, 659.25, 783.99, 659.25, 587.33, 783.99, 880, 987.77],
-  forest: [523.25, 587.33, 659.25, 783.99, 880, 1046.5, 880, 783.99],
-  cavern: [220, 261.63, 329.63, 220, 329.63, 392, 329.63, 261.63],
-  movie:  [392, 523.25, 659.25, 523.25, 440, 659.25, 783.99, 880],
-  sky:    [659.25, 783.99, 987.77, 1046.5, 783.99, 1046.5, 1318.5, 1567.98]
+  forest: { tempo: 330, drums: [1,0,1,0,1,0,1,1],
+    melody: [523.25, 587.33, 659.25, 783.99, 880, 1046.5, 880, 783.99],
+    bass:   [130.81, 130.81, 98, 98, 130.81, 130.81, 98, 130.81] },
+  cavern: { tempo: 430, drums: [1,0,0,0,1,0,0,0],
+    melody: [220, 261.63, 329.63, 220, 329.63, 392, 329.63, 261.63],
+    bass:   [110, 110, 110, 110, 87.31, 87.31, 110, 110] },
+  sky:    { tempo: 290, drums: [1,0,1,0,1,0,1,1],
+    melody: [659.25, 783.99, 987.77, 1046.5, 783.99, 1046.5, 1318.5, 1567.98],
+    bass:   [164.81, 164.81, 130.81, 130.81, 164.81, 164.81, 196, 196] }
 };
 function musicNote(freq, dur, vol, type, delay) {
   const ctx = musicCtx(); if (!ctx) return;
@@ -3377,18 +3384,40 @@ function musicNote(freq, dur, vol, type, delay) {
 function musicDrone() {
   const ctx = musicCtx(); if (!ctx || MUSIC.drone) return;
   try {
-    const g = ctx.createGain(); g.gain.value = 0.02; g.connect(ctx.destination);
+    const g = ctx.createGain(); g.gain.value = 0.012; g.connect(ctx.destination);
     [130.81, 196].forEach(f => { const o = ctx.createOscillator(); o.type = 'sine'; o.frequency.value = f; o.connect(g); o.start(); });
     MUSIC.drone = g;
   } catch (e) {}
 }
+let musicNoiseBuf = null;
+function musicHit(vol, delay) {
+  const ctx = musicCtx(); if (!ctx) return;
+  try {
+    if (!musicNoiseBuf) {
+      musicNoiseBuf = ctx.createBuffer(1, Math.floor(ctx.sampleRate * 0.09), ctx.sampleRate);
+      const d = musicNoiseBuf.getChannelData(0);
+      for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+    }
+    const t0 = ctx.currentTime + (delay || 0);
+    const src = ctx.createBufferSource(); src.buffer = musicNoiseBuf;
+    const f = ctx.createBiquadFilter(); f.type = 'lowpass'; f.frequency.value = 950;
+    const g = ctx.createGain();
+    g.gain.setValueAtTime(vol || 0.06, t0);
+    g.gain.exponentialRampToValueAtTime(0.001, t0 + 0.06);
+    src.connect(f); f.connect(g); g.connect(ctx.destination);
+    src.start(t0);
+  } catch (e) {}
+}
 function musicTick() {
   if (!MUSIC.on || !MUSIC.ctx) return;
-  const pat = MUSIC_PATTERNS[MUSIC.pattern] || MUSIC_PATTERNS.home;
-  musicNote(pat[MUSIC.step % pat.length], 0.42, 0.045, 'triangle');
-  if (MUSIC.step % 16 === 8) musicNote(1046.5, 0.6, 0.03, 'sine', 0.2);
+  const pat = MUSIC_PATTERNS[MUSIC.pattern] || MUSIC_PATTERNS.forest;
+  const step = MUSIC.step % pat.melody.length;
+  musicNote(pat.melody[step], 0.32, 0.05, 'triangle');
+  musicNote(pat.bass[step], 0.42, 0.05, 'sine', 0.02);
+  if (pat.drums && pat.drums[step]) musicHit(0.07, 0.01);
+  if (MUSIC.step % 16 === 8) musicNote(pat.melody[0] * 2, 0.5, 0.025, 'sine', 0.2);
   MUSIC.step++;
-  MUSIC.timer = setTimeout(musicTick, 430);
+  MUSIC.timer = setTimeout(musicTick, pat.tempo);
 }
 function musicSetPattern(p) {
   if (!MUSIC_PATTERNS[p] || MUSIC.pattern === p) return;
@@ -3408,14 +3437,17 @@ function stopMusic() {
 function toggleMusic() {
   MUSIC.on = !MUSIC.on;
   state.music = MUSIC.on; saveState();
-  if (MUSIC.on) { startMusic(); okS(); } else { stopMusic(); badS(); }
+  if (MUSIC.on) { if (currentView === 'adventure') startMusic(); okS(); } else { stopMusic(); badS(); }
   refreshMusicBtn(); renderSettings();
 }
 function refreshMusicBtn() {
   const b = $('#music-btn');
   if (b) { b.textContent = MUSIC.on ? '🎵' : '🔇'; b.classList.toggle('muted', !MUSIC.on); b.setAttribute('aria-pressed', MUSIC.on ? 'true' : 'false'); }
 }
-function firstMusicGesture() { startMusic(); }
+function firstMusicGesture() {
+  try { const ctx = musicCtx(); if (ctx && ctx.state === 'suspended') ctx.resume(); } catch (e) {}
+  if (currentView === 'adventure') startMusic();
+}
 function detectEmojiFont() {
   try {
     const cv = document.createElement('canvas'); cv.width = 24; cv.height = 24;
@@ -3700,6 +3732,7 @@ function switchRegion(r) {
   $$('#adv-tabs .tab').forEach(t => t.classList.toggle('on', t.dataset.r === r));
   if (r === 'cavern') caveDraw(); else if (r === 'sky') skyDraw(); else ADV.draw();
   musicSetPattern(r === 'cavern' ? 'cavern' : r === 'sky' ? 'sky' : 'forest');
+  if (MUSIC.on) startMusic();
   updateRegionLearn();
   pop();
 }
@@ -4469,6 +4502,12 @@ window.KODA_VERSION = '1.0.0-beta.3';
    reload once so the user always gets the fresh app. */
 if ('serviceWorker' in navigator) {
   try {
+    /* Force-check for a newer service worker on every load (browsers normally
+       throttle this to ~24h, which is why some users stayed stuck on the old app). */
+    navigator.serviceWorker.ready.then(function (reg) {
+      reg.update().catch(function () {});
+    });
+    /* Self-heal: when a newer service worker takes control, reload once. */
     navigator.serviceWorker.addEventListener('controllerchange', function () {
       if (!sessionStorage.getItem('koda-sw-reloaded')) {
         sessionStorage.setItem('koda-sw-reloaded', '1');

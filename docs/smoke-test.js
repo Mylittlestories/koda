@@ -28,6 +28,17 @@ const dom = new JSDOM(html, {
     window.scrollTo = () => {};
     window.HTMLCanvasElement.prototype.getContext = function(){ return fakeCtx(this); };
     window.HTMLCanvasElement.prototype.toDataURL = function(){ return 'data:image/png;base64,QUJD'; }; // decodes to "ABC"
+    // minimal AudioContext stub so music start/stop is testable in jsdom
+    window.AudioContext = class {
+      constructor(){ this.state='running'; this.currentTime=0; this.destination={}; this.sampleRate=48000; }
+      resume(){ this.state='running'; }
+      createOscillator(){ return { type:'', frequency:{value:0}, connect(){}, start(){}, stop(){} }; }
+      createGain(){ return { gain:{ setValueAtTime(){}, linearRampToValueAtTime(){}, exponentialRampToValueAtTime(){} }, connect(){}, disconnect(){} }; }
+      createBuffer(ch,frames){ return { getChannelData(){ return new Float32Array(frames); } }; }
+      createBufferSource(){ return { buffer:null, connect(){}, start(){} }; }
+      createBiquadFilter(){ return { type:'', frequency:{value:0}, connect(){} }; }
+    };
+    window.webkitAudioContext = window.AudioContext;
   }
 });
 const w = dom.window, d = w.document;
@@ -42,16 +53,18 @@ const assert = (cond, msg) => { if(!cond){ throw new Error('ASSERT FAIL: '+msg);
   assert(ev('currentView') === 'home', 'starts on home');
 
   // ---------- MUSIC per-region ----------
-  assert(ev("Object.keys(MUSIC_PATTERNS).join(',')") === 'home,forest,cavern,movie,sky', '5 music patterns');
-  assert(ev('MUSIC.pattern') === 'home', 'starts on home pattern');
+  assert(ev("Object.keys(MUSIC_PATTERNS).join(',')") === 'forest,cavern,sky', '3 adventure music patterns (music is adventure-only)');
+  assert(ev('MUSIC.timer') === null, 'no music on home (adventure-only)');
   w.go('movie');
-  assert(ev('MUSIC.pattern') === 'movie', 'movie view switches pattern');
+  assert(ev('MUSIC.timer') === null, 'no music in movie studio');
+  w.go('code');
+  assert(ev('MUSIC.timer') === null, 'no music in code playground');
   w.go('adventure');
-  assert(ev('MUSIC.pattern') === 'forest', 'adventure switches to forest pattern');
+  assert(ev('MUSIC.pattern') === 'forest' && ev('!!MUSIC.timer'), 'adventure starts forest music');
   ev("advSave.won = true; advSaveNow(); switchRegion('cavern');");
-  assert(ev('MUSIC.pattern') === 'cavern', 'cavern region switches pattern');
+  assert(ev('MUSIC.pattern') === 'cavern' && ev('!!MUSIC.timer'), 'cavern region switches music');
   w.go('home');
-  assert(ev('MUSIC.pattern') === 'home', 'back home restores pattern');
+  assert(ev('MUSIC.timer') === null, 'leaving adventure stops music');
 
   // ---------- AUTOSAVE photo pixels ----------
   w.go('photo');
@@ -181,7 +194,7 @@ const assert = (cond, msg) => { if(!cond){ throw new Error('ASSERT FAIL: '+msg);
   assert(!html.includes('alive || true'), 'stage redraw bug fixed (no `alive || true`)');
   assert(html.includes('Kano-inspired learning playground'), 'title is Kano-inspired, not "alternative"');
   assert(html.includes('aria-label="Main navigation"'), 'nav has aria-label');
-  assert(html.includes('id="music-btn"') && html.includes('aria-label="Toggle enchanted music"'), 'music button accessible');
+  assert(html.includes('id="music-btn"') && html.includes('aria-label="Toggle adventure music"'), 'music button accessible');
   assert(html.includes('class="skip" href="#app"'), 'skip link present');
   assert(html.includes('prefers-reduced-motion: reduce'), 'reduced-motion respected');
   assert(html.includes('role="img" aria-label="Adventure map"'), 'adventure canvas has alt text');
