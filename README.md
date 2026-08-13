@@ -42,7 +42,7 @@ Koda is a single-page app (`index.html` — no build step, no dependencies, no t
 
 **💾 Auto-save:** your code blocks, movie timeline and photo edits — **including the photo's actual pixels** (size-guarded so it can never blow storage) — are saved automatically (debounced + every 15s + on tab close) and restored when you come back.
 
-**🎵 Adventure music:** a soft magical soundtrack (WebAudio, no files) starts on your first tap — and it's **region-aware**: the Forest plays a bright pentatonic tune, the Caverns a deep mysterious one, the Movie Studio a sparkly theme. Toggle anytime with the 🎵 button or in Settings.
+**🎵 Adventure music:** an adventurous procedural soundtrack (WebAudio, no files) that plays **only inside the game** so it never distracts from learning — the Forest gets a bright driving theme, the Caverns a deep ominous one, the Sky Temple a triumphant one (melody + bass + percussion per region). Toggle anytime with the 🎵 button or in Settings.
 
 ---
 
