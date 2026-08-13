@@ -1,5 +1,14 @@
 # 🦊 Koda — Learn by Making
 
+<!--
+  TODO (once the repo is public): replace YOUR-USERNAME in the badge URLs below
+  with your real GitHub username, then delete this comment.
+-->
+[![Build](https://github.com/YOUR-USERNAME/koda/actions/workflows/build-desktop.yml/badge.svg)](https://github.com/YOUR-USERNAME/koda/actions)
+[![Pages](https://github.com/YOUR-USERNAME/koda/actions/workflows/deploy-pages.yml/badge.svg)](https://github.com/YOUR-USERNAME/koda/actions)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![PRs welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](docs/CONTRIBUTING.md)
+
 > A friendly, **open-source, Kano-inspired** learning playground that runs entirely in your browser.
 > Code games, edit photos, direct movies, train real skills, and learn how the digital world works — at your own pace, with nothing tracked and nothing to install.
 
@@ -89,6 +98,7 @@ koda/
 ├── LICENSE               # MIT
 ├── docs/
 │   ├── GITHUB-SETUP.md   # push + release, one copy-paste
+│   ├── BETA-INVITE.md    # copy-paste tester invites
 │   ├── koda-logo.png
 │   ├── ARCHITECTURE.md   # how the app is organized, where to add things
 │   ├── CONTRIBUTING.md
