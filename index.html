@@ -843,7 +843,7 @@ function renderSettings() {
   $('#about-box').innerHTML =
     '<b>Koda</b> is an open‑source learning playground <b>inspired by</b> <b>Kano</b> — the company that made build‑your‑own computer kits and friendly block coding. ' +
     'Koda is an independent, fan‑made prototype, not affiliated with Kano: everything runs in your browser, nothing is tracked, and it is free to copy, change and share. ' +
-    'Made with 💜 for curious makers. · © 2026 <b>DRVsoft</b> · <b>v1.0.0-beta.3</b>';
+    'Made with 💜 for curious makers. · © 2026 <b>DRVsoft</b> · <b>v1.0.0-beta.4</b>';
 }
 function pickAvatar(a) { state.avatar = a; saveState(); pop(); renderSettings(); refreshXP(); go('settings'); }
 function toggleSound() { state.sound = !state.sound; saveState(); if (state.sound) okS(); syncSwitchAria(); renderSettings(); }
@@ -4497,7 +4497,7 @@ renderGallery();
 renderQuests();
 updateStreakNow();
 renderDaily();
-window.KODA_VERSION = '1.0.0-beta.3';
+window.KODA_VERSION = '1.0.0-beta.4';
 /* Self-heal: if a newer service worker takes control (e.g. after a deploy),
    reload once so the user always gets the fresh app. */
 if ('serviceWorker' in navigator) {
