@@ -40,11 +40,13 @@ Verify: `git log --oneline` shows your 2 commits; GitHub shows the files.
 ## 2. Enable GitHub Pages (free web hosting of the app)
 
 1. GitHub → repo → **Settings → Pages** → *Source*: **GitHub Actions** (not branch).
-2. Push to `main` → the `deploy-pages.yml` workflow auto-deploys the web app to
-   `https://<YOU>.github.io/koda/`.
+2. Push to `main` → the `deploy-pages.yml` workflow auto-deploys the site to
+   `https://<YOU>.github.io/koda/` — the **landing page** is the root (`landing.html`),
+   and the app itself lives at `https://<YOU>.github.io/koda/app.html` (the Play buttons
+   point there automatically).
 3. First deploy takes ~1 min. The page is the full app (works offline via `sw.js`).
 
-> The PWA manifest + icons + service worker are copied into the deploy automatically.
+> The PWA manifest + icons + service worker are copied into the deploy automatically (and patched to point at `app.html`).
 
 ---
 

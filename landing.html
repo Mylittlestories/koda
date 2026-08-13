@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Koda — Learn by Making (free, open-source, Kano-inspired)</title>
+<meta name="description" content="Koda is a free, open-source, Kano-inspired learning playground for kids: snap-code games, explore a 3-world adventure, edit photos, direct movies, and learn how computers really work.">
+<meta name="theme-color" content="#6d5cff">
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Ctext%20y='.9em'%20font-size='90'%3E%F0%9F%A6%8A%3C/text%3E%3C/svg%3E">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg1:#6d5cff;--bg2:#43a2ff;
+  --ink:#23204a;--ink2:#6b6890;--card:#ffffff;
+  --violet:#7c5cff;--blue:#3f9bff;--cyan:#22c7e8;--green:#2fd07a;
+  --orange:#ff9f43;--pink:#ff5ca8;--yellow:#ffd166;
+  --r:20px;--shadow:0 10px 30px rgba(60,40,140,.14);
+  --font:ui-rounded,"SF Pro Rounded","Baloo 2",Nunito,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+}
+body{font-family:var(--font);color:var(--ink);background:linear-gradient(165deg,var(--bg1),var(--bg2)) fixed;min-height:100vh;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+button,a{font-family:inherit}
+a{color:inherit}
+.container{max-width:1080px;margin:0 auto;padding:0 20px}
+/* top bar */
+.top{display:flex;align-items:center;gap:14px;padding:16px 0}
+.logo{display:flex;align-items:center;gap:8px;font-weight:900;font-size:21px;color:#fff;letter-spacing:-.3px}
+.logo .mark{font-size:24px}
+.top .spacer{margin-left:auto}
+.btn{border:none;border-radius:14px;padding:12px 20px;font-weight:900;font-size:14.5px;cursor:pointer;transition:.15s;text-decoration:none;display:inline-block;box-shadow:0 5px 14px rgba(60,40,140,.25)}
+.btn:active{transform:scale(.97)}
+.btn-white{background:#fff;color:var(--violet)}
+.btn-ghost-w{background:rgba(255,255,255,.16);color:#fff}
+.btn-big{padding:15px 26px;font-size:16px}
+/* hero */
+.hero{display:flex;align-items:center;gap:28px;padding:44px 0 30px;color:#fff;flex-wrap:wrap}
+.hero-txt{flex:1;min-width:280px}
+.badge-live{display:inline-block;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.3);border-radius:999px;padding:5px 12px;font-size:12px;font-weight:800;letter-spacing:.4px;text-transform:uppercase;margin-bottom:14px}
+.hero h1{font-size:clamp(30px,5.5vw,52px);font-weight:900;line-height:1.05;letter-spacing:-1px}
+.hero h1 .hl{background:linear-gradient(90deg,#ffd166,#ff9f43);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p.sub{font-size:17px;line-height:1.6;margin:14px 0 22px;color:rgba(255,255,255,.92);max-width:540px}
+.hero-actions{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+.honest{font-size:12.5px;color:rgba(255,255,255,.75);margin-top:14px;font-weight:600}
+.hero-visual{flex:0 0 260px;text-align:center}
+.mascot{font-size:110px;line-height:1;filter:drop-shadow(0 14px 22px rgba(30,20,80,.35));animation:floaty 4s ease-in-out infinite}
+@keyframes floaty{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-14px) rotate(4deg)}}
+.stats{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin:8px 0 0}
+.stat{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.2);border-radius:16px;padding:10px 16px;text-align:center;min-width:110px}
+.stat b{display:block;font-size:22px;font-weight:900}
+.stat span{font-size:11.5px;font-weight:700;opacity:.85}
+/* sections */
+section{padding:34px 0}
+.panel{background:var(--card);border-radius:24px;padding:28px;box-shadow:var(--shadow)}
+.sec-title{font-size:clamp(20px,3vw,28px);font-weight:900;text-align:center;margin-bottom:8px}
+.sec-sub{text-align:center;color:var(--ink2);font-size:15px;max-width:640px;margin:0 auto 26px;line-height:1.55}
+.grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+.card{background:var(--card);border-radius:var(--r);padding:20px;box-shadow:var(--shadow);border-top:6px solid var(--ac,#7c5cff)}
+.card .ico{font-size:38px}
+.card h3{font-size:17px;font-weight:900;margin:8px 0 4px}
+.card p{font-size:13.5px;color:var(--ink2);line-height:1.5}
+/* learning section */
+.learn-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:center}
+@media(max-width:760px){.learn-row{grid-template-columns:1fr}}
+.learn-list{list-style:none}
+.learn-list li{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px dashed rgba(124,92,255,.2);font-size:14.5px;line-height:1.5}
+.learn-list li:last-child{border-bottom:none}
+.learn-list .li{font-size:20px}
+.concept-bubbles{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:14px}
+.bubble{background:rgba(124,92,255,.1);border-radius:999px;padding:7px 14px;font-weight:800;font-size:13px}
+/* platforms */
+.plat{display:flex;align-items:center;gap:14px;background:var(--card);border-radius:16px;padding:14px 16px;box-shadow:var(--shadow)}
+.plat .pi{font-size:30px}
+.plat b{font-size:15px}
+.plat span{font-size:12.5px;color:var(--ink2);display:block;line-height:1.4}
+.plat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+/* beta */
+.beta{background:linear-gradient(135deg,rgba(255,209,102,.25),rgba(255,92,168,.18));border:2px dashed var(--orange);border-radius:24px;padding:26px;text-align:center}
+.beta h2{font-size:22px;font-weight:900}
+.beta p{color:var(--ink2);max-width:600px;margin:8px auto 16px;line-height:1.55;font-size:14.5px}
+/* faq */
+details{background:var(--card);border-radius:14px;padding:14px 18px;box-shadow:var(--shadow);margin:10px 0}
+summary{font-weight:900;font-size:15px;cursor:pointer;list-style:none}
+summary::before{content:"❓ ";font-size:14px}
+details p{color:var(--ink2);font-size:14px;line-height:1.6;margin-top:8px}
+/* footer */
+footer{color:rgba(255,255,255,.9);padding:26px 0 40px;text-align:center;font-size:13.5px;line-height:1.7}
+footer a{font-weight:800;text-decoration:underline}
+footer .small{font-size:12px;opacity:.75;margin-top:6px}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
+:focus-visible{outline:3px solid #fff;outline-offset:2px;border-radius:8px}
+</style>
+</head>
+<body>
+
+<header class="container top">
+  <div class="logo"><span class="mark">🦊</span>Koda</div>
+  <div class="spacer"></div>
+  <a class="btn btn-ghost-w" href="#platforms">💾 Get the app</a>
+  <a class="btn btn-white" id="play-btn" href="./index.html">▶ Play now</a>
+</header>
+
+<div class="container">
+  <div class="hero">
+    <div class="hero-txt">
+      <span class="badge-live">Beta · Open source · Free</span>
+      <h1>Learn by <span class="hl">making</span> things you love.</h1>
+      <p class="sub">Koda is a friendly playground where kids snap together code, explore a
+      three-world adventure, edit photos, direct little movies — and quietly learn how
+      computers really work. One file. No ads. Nothing tracked. Works offline.</p>
+      <div class="hero-actions">
+        <a class="btn btn-white btn-big" id="play-btn-2" href="./index.html">🚀 Play now — it's free</a>
+        <a class="btn btn-ghost-w btn-big" href="#features">🧭 Take a tour</a>
+      </div>
+      <p class="honest">Independent &amp; fan-made — <b>inspired by</b> Kano Computing, not affiliated. In beta: your feedback makes it better. 🐞</p>
+    </div>
+    <div class="hero-visual">
+      <div class="mascot">🦊</div>
+      <div class="stats">
+        <div class="stat"><b>3</b><span>adventure worlds</span></div>
+        <div class="stat"><b>11</b><span>lessons</span></div>
+        <div class="stat"><b>10</b><span>coding missions</span></div>
+        <div class="stat"><b>1</b><span>file · zero deps</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section id="features">
+  <div class="container">
+    <h2 class="sec-title">Everything in one friendly place</h2>
+    <p class="sec-sub">Seven worlds, one consistent, colourful, confidence-building experience.</p>
+    <div class="grid">
+      <div class="card" style="--ac:var(--blue)"><div class="ico">🎮</div><h3>Code Playground</h3><p>Snap colorful blocks — loops, conditionals, pen &amp; sound — run them on a live stage, and peek at the real JavaScript behind them. 10 guided missions.</p></div>
+      <div class="card" style="--ac:var(--orange)"><div class="ico">🗺️</div><h3>Adventure</h3><p>Koda Forest → Crystal Caverns → Sky Temple. Every puzzle (memory, patterns, robot-coding, quizzes) teaches a real concept on the way.</p></div>
+      <div class="card" style="--ac:var(--pink)"><div class="ico">🎨</div><h3>Photo Lab</h3><p>Paint, sticker, caption and filter photos — undo, redo, and export your art as PNG.</p></div>
+      <div class="card" style="--ac:var(--yellow)"><div class="ico">🎬</div><h3>Movie Studio</h3><p>Build animated scenes on a timeline, add titles, and export a real video file.</p></div>
+      <div class="card" style="--ac:var(--green)"><div class="ico">🧠</div><h3>Knowledge Quest</h3><p>11 short illustrated lessons — from binary and AI to internet safety — with quizzes and Brain Cards.</p></div>
+      <div class="card" style="--ac:var(--cyan)"><div class="ico">🎯</div><h3>Practice Zone</h3><p>Typing, quick math and memory drills that build real skills and earn XP.</p></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="container panel">
+    <h2 class="sec-title">Built for learning, not just points</h2>
+    <div class="learn-row">
+      <ul class="learn-list">
+        <li><span class="li">🧩</span><div><b>Concepts, not just levels.</b> Solving a puzzle or finishing a lesson unlocks a named idea — Sequencing, Patterns, Debugging, Logic — with a plain-language explanation.</div></li>
+        <li><span class="li">💡</span><div><b>Hints that teach.</b> Every puzzle offers a hint that guides thinking instead of spoiling the answer.</div></li>
+        <li><span class="li">💾</span><div><b>Auto-save.</b> Code, movies and photo edits survive closing the tab — nothing lost mid-project.</div></li>
+        <li><span class="li">🔒</span><div><b>Private by design.</b> Everything runs on the device. No accounts, no tracking, no ads.</div></li>
+      </ul>
+      <div>
+        <p style="font-weight:900;color:var(--ink2);font-size:13px;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">You'll unlock these ideas:</p>
+        <div class="concept-bubbles">
+          <span class="bubble">🔢 Sequencing</span>
+          <span class="bubble">🧩 Patterns</span>
+          <span class="bubble">🔍 Debugging</span>
+          <span class="bubble">🧭 Logic</span>
+          <span class="bubble">🧠 Memory</span>
+          <span class="bubble">🎵 Sound &amp; rhythm</span>
+          <span class="bubble">🤖 Programming basics</span>
+          <span class="bubble">📚 Knowledge check</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="platforms">
+  <div class="container">
+    <h2 class="sec-title">Runs everywhere</h2>
+    <p class="sec-sub">One self-contained file, four ways to use it. No internet needed after it's loaded.</p>
+    <div class="plat-grid">
+      <div class="plat"><span class="pi">🌐</span><div><b>Web</b><span>Play instantly in any modern browser — desktop or tablet. Installable as an app (PWA).</span></div></div>
+      <div class="plat"><span class="pi">🪟</span><div><b>Windows</b><span>Self-contained installer (`.exe`) — offline, no downloads at install.</span></div></div>
+      <div class="plat"><span class="pi">🐧</span><div><b>Linux</b><span>AppImage + .deb packages, fully offline.</span></div></div>
+      <div class="plat"><span class="pi">🍓</span><div><b>Raspberry Pi</b><span>Boot a Pi straight into Koda — a whole learning console.</span></div></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <div class="beta">
+      <h2>🧪 We're in beta — and we need you</h2>
+      <p>Koda is a young, independent project. If you (or a kid you know) play it for 10 minutes,
+      your feedback shapes the next version. There's a <b>Report a bug</b> button in the app
+      that prepares a ready-to-send report.</p>
+      <a class="btn btn-white btn-big" id="play-btn-3" href="./index.html">▶ Try it now</a>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <h2 class="sec-title">Good questions</h2>
+    <details open><summary>Is it really free?</summary><p>Yes — free forever, and open-source (MIT). No ads, no subscriptions, no accounts. It's an independent fan project, not a company.</p></details>
+    <details><summary>What ages is it for?</summary><p>Roughly 7–13, but younger kids love exploring with help, and older kids can dig into the real JavaScript preview and harder robot-coding puzzles.</p></details>
+    <details><summary>Does it need internet?</summary><p>No. It's one file with everything inside — sound is even synthesized in the browser. Once you have it, it works anywhere, forever.</p></details>
+    <details><summary>Is it really "like Kano"?</summary><p>It's <b>inspired by</b> Kano's spirit — making tech friendly and hands-on. Koda is independent software, not affiliated with Kano Computing, and doesn't include their hardware kits.</p></details>
+    <details><summary>Can I use it in a classroom?</summary><p>Yes — that's exactly the kind of use it's built for. Free, offline, no student accounts, and the source is open so you can adapt it.</p></details>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <p>🦊 <b>Koda</b> — learn by making · <a href="https://github.com/YOUR-USERNAME/koda" id="gh-link">GitHub</a> · <a href="docs/BETA-TESTING.md">Beta</a> · <a href="LICENSE">MIT</a></p>
+    <p class="small">© 2026 DRVsoft · Kano-inspired, independent, not affiliated with Kano Computing. Sound &amp; visuals are procedural — no assets to load.</p>
+  </div>
+</footer>
+
+<script>
+/* Pick the right app URL whether this page is:
+   - opened locally as landing.html next to index.html, or
+   - served as the site root (index.html) with the app at app.html (GitHub Pages layout). */
+(function () {
+  var isRoot = location.pathname.split('/').pop() === '' || location.pathname.split('/').pop() === 'index.html';
+  var appHref = isRoot ? './app.html' : './index.html';
+  ['play-btn', 'play-btn-2', 'play-btn-3'].forEach(function (id) {
+    var el = document.getElementById(id);
+    if (el) el.setAttribute('href', appHref);
+  });
+  var gh = document.getElementById('gh-link');
+  if (gh && location.hostname && location.hostname.indexOf('github.io') !== -1) {
+    gh.href = 'https://github.com/' + location.hostname.split('.')[0] + '/koda';
+  }
+})();
+</script>
+</body>
+</html>
