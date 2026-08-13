@@ -4465,6 +4465,18 @@ renderQuests();
 updateStreakNow();
 renderDaily();
 window.KODA_VERSION = '1.0.0-beta.3';
+/* Self-heal: if a newer service worker takes control (e.g. after a deploy),
+   reload once so the user always gets the fresh app. */
+if ('serviceWorker' in navigator) {
+  try {
+    navigator.serviceWorker.addEventListener('controllerchange', function () {
+      if (!sessionStorage.getItem('koda-sw-reloaded')) {
+        sessionStorage.setItem('koda-sw-reloaded', '1');
+        setTimeout(function () { location.reload(); }, 300);
+      }
+    });
+  } catch (e) {}
+}
 refreshMusicBtn();
 requestPersistentStorage();
 detectEmojiFont();
