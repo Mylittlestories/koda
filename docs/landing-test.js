@@ -1,6 +1,7 @@
 const { JSDOM, VirtualConsole } = require('jsdom');
 const fs = require('fs');
-const landing = fs.readFileSync('/home/user/koda/landing.html', 'utf8');
+const path = require('path');
+const landing = fs.readFileSync(path.join(__dirname, '..', 'landing.html'), 'utf8');
 const errors = [];
 const vc = new VirtualConsole();
 vc.on('jsdomError', e => errors.push(e.message));

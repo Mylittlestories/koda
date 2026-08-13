@@ -4,7 +4,9 @@ try { ({ JSDOM: JSDOMc, VirtualConsole: VirtualConsolec } = require('jsdom')); }
 catch (e) { console.error('jsdom is a dev-only dependency: run `npm install jsdom` first.'); process.exit(2); }
 const JSDOM = JSDOMc, VirtualConsole = VirtualConsolec;
 const fs = require('fs');
-const html = fs.readFileSync('/home/user/koda/index.html', 'utf8');
+const path = require('path');
+const os = require('os');
+const html = fs.readFileSync(path.join(__dirname, '..', 'index.html'), 'utf8');
 const errors = [];
 const noop = () => {};
 function fakeCtx(canvas) {
@@ -80,7 +82,7 @@ const assert = (cond, msg) => { if(!cond){ throw new Error('ASSERT FAIL: '+msg);
   const zipBlob = await ev('buildGalleryZip()');
   assert(zipBlob !== null, 'zip built (projects + photos)');
   const buf = Buffer.from(await zipBlob.arrayBuffer());
-  fs.writeFileSync('/tmp/koda-test.zip', buf);
+  fs.writeFileSync(path.join(os.tmpdir(), 'koda-test.zip'), buf);
   assert(buf[0] === 0x50 && buf[1] === 0x4b && buf[2] === 0x03 && buf[3] === 0x04, 'zip has PK local-header magic');
   assert(buf.toString('latin1').includes('photos/art-1.jpg'), 'zip includes photo entry');
   assert(buf.toString('latin1').includes('.koda'), 'zip includes project entry');
