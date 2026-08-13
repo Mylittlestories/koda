@@ -28,6 +28,7 @@ no tracking, nothing to sign up for.
 can spend 10–15 minutes playing it, you'd be doing real quality testing:
 
 - 📍 Play it here: **{PLAY_URL}** (works on any computer or tablet — a real browser tab, not a preview)
+- 📝 Prefer a quick form? 3 questions, 2 minutes: **{FEEDBACK_URL}**
 - 🧭 What to try: the **Code Playground**, the **Koda Forest adventure**, and **My Projects → 📦 Export all**
 - 🐞 If anything feels broken, confusing, or unfriendly, there's a **Report a bug** button in
   Settings that copies a ready-to-send report — or just reply to this email.

@@ -99,6 +99,8 @@ koda/
 ├── docs/
 │   ├── GITHUB-SETUP.md   # push + release, one copy-paste
 │   ├── BETA-INVITE.md    # copy-paste tester invites
+│   ├── TESTER-FEEDBACK.md # 3-question feedback form
+│   ├── RELEASE-NOTES.md   # ready-to-paste release description
 │   ├── koda-logo.png
 │   ├── ARCHITECTURE.md   # how the app is organized, where to add things
 │   ├── CONTRIBUTING.md
