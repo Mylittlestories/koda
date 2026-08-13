@@ -31,7 +31,7 @@ jobs:
         run: npm run dist
 
       - name: Smoke-test the app (jsdom)
-        run: npm install jsdom --no-fund --no-audit && node docs/smoke-test.js
+        run: npm install jsdom --no-fund --no-audit && node docs/smoke-test.js && node docs/strict-probe.js
 
       - uses: actions/upload-artifact@v4
         with:

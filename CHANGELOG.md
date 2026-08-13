@@ -1,5 +1,27 @@
 # Changelog
 
+## 1.0.0-beta.2 (2026-08-13) · © DRVsoft — bug-fix release
+
+**Fixed (found via a real-browser pixel test suite)**
+- **Code Playground stage now works without emoji fonts**: stars and the fox are drawn as
+  vector shapes (was 100% emoji glyphs — on devices without a color-emoji font the results
+  were invisible). Verified by pixel-analysis in real Chromium: sprite + stars render
+  regardless of fonts.
+- **Adventure "Code Master" puzzle (both Forest and Sky Temple) now works without emoji
+  fonts**: the goal star and the robot are vector-drawn, so the puzzle is always visible.
+- **Star Champion mission retuned 6 → 4 stars** (6 in a single run was practically
+  unachievable).
+- Added **emoji-font detection** — on devices missing emoji fonts, Koda shows a one-time
+  friendly tip (core gameplay no longer depends on them).
+- Minor cleanup in the forest art pass.
+
+**Testing upgrades**
+- New `docs/strict-probe.js`: runs every view + puzzle with a *strict* canvas stub that
+  throws on any non-2D-API method call, and asserts every canvas actually painted.
+- New `packaging/electron/test-real.js`: drives the app in real Chromium (Electron) and
+  checks actual canvas pixels (sprite/stars/robot visible), flow completion, and console
+  errors. All checks green.
+
 ## 1.0.0-beta (2026-08-13) · © DRVsoft
 **Core**
 - Code Playground: snap blocks, loops, `if near a star`, live stage, real-JS preview, 10 missions, 5 templates

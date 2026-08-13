@@ -210,6 +210,14 @@ const assert = (cond, msg) => { if(!cond){ throw new Error('ASSERT FAIL: '+msg);
   ev("conceptLearnMore('mem');");
   await sleep(200);
   assert(ev('currentView') === 'practice', 'learn-more opens practice for memory concept');
+
+  // ---------- BUG FIXES: emoji-free vectors + mission tuning ----------
+  assert(html.includes('function drawStarShape'), 'vector star helper exists');
+  assert(html.includes('function drawVectorRobot'), 'vector robot helper exists');
+  assert(html.includes("ART.fox(c, s.x, s.y, dir4, Date.now(), 46 * s.scale)"), 'stage sprite drawn with vector fox');
+  assert(html.includes("out.stars >= 4"), 'Star Champion mission retuned to 4 stars (was 6 — nearly impossible)');
+  assert(html.includes('function detectEmojiFont'), 'emoji-font detection present');
+  assert(ev('typeof drawStarShape === "function" && typeof drawVectorRobot === "function"'), 'vector helpers callable');
   console.log('\nALL V7 SMOKE TESTS PASSED ✔ (' + errors.length + ' console errors)');
   process.exit(0);
 })().catch(e => { console.error(e); process.exit(1); });

@@ -1122,10 +1122,13 @@ function drawStage() {
   c.strokeStyle = 'rgba(124,92,255,.08)'; c.lineWidth = 1;
   for (let x = 0; x < stageCv.width; x += 40) { c.beginPath(); c.moveTo(x, 0); c.lineTo(x, stageCv.height); c.stroke(); }
   for (let y = 0; y < stageCv.height; y += 40) { c.beginPath(); c.moveTo(0, y); c.lineTo(stageCv.width, y); c.stroke(); }
-  // stars
+  // stars (vector — visible even without emoji fonts)
   CODING.stars.forEach(s => {
-    c.font = '26px serif'; c.textAlign = 'center'; c.textBaseline = 'middle';
-    c.save(); c.translate(s.x, s.y); c.rotate(Math.sin(Date.now() / 400 + s.x) * 0.15); c.fillText('⭐', 0, 0); c.restore();
+    c.save();
+    c.translate(s.x, s.y);
+    c.rotate(Math.sin(Date.now() / 400 + s.x) * 0.15);
+    drawStarShape(c, 0, 0, 11, '#ffd166', true);
+    c.restore();
   });
   // pen trail
   c.drawImage(penCv, 0, 0);
@@ -1133,16 +1136,16 @@ function drawStage() {
   c.save();
   CODING.particles.forEach(p => { c.globalAlpha = p.life; c.font = p.size + 'px serif'; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText(p.emoji, p.x, p.y); });
   c.restore();
-  // sprite
+  // sprite (vector fox — visible even without emoji fonts)
   const s = CODING.sprite;
   if (s.visible) {
+    const deg = ((s.dir % 360) + 360) % 360;
+    const dir4 = (Math.round(deg / 90) + 1) % 4;
     c.save();
     c.translate(s.x, s.y);
     if (s.hue) { c.filter = 'hue-rotate(' + s.hue + 'deg)'; }
-    c.rotate(s.dir * Math.PI / 180);
-    c.scale(s.scale, s.scale);
-    c.font = '46px serif'; c.textAlign = 'center'; c.textBaseline = 'middle';
-    c.fillText('🦊', 0, 0);
+    c.translate(-s.x, -s.y);
+    ART.fox(c, s.x, s.y, dir4, Date.now(), 46 * s.scale);
     c.restore();
     if (s.saying) {
       const w = Math.max(60, s.saying.length * 7.5 + 24);
@@ -1155,6 +1158,31 @@ function drawStage() {
   }
 }
 function roundRect(c, x, y, w, h, r) { c.beginPath(); c.moveTo(x + r, y); c.arcTo(x + w, y, x + w, y + h, r); c.arcTo(x + w, y + h, x, y + h, r); c.arcTo(x, y + h, x, y, r); c.arcTo(x, y, x + w, y, r); c.closePath(); }
+/* vector drawing (works even when the device has no emoji fonts) */
+function drawStarShape(c, x, y, r, color, glow) {
+  c.save(); c.translate(x, y);
+  if (glow) { c.fillStyle = 'rgba(255,209,102,.28)'; c.beginPath(); c.arc(0, 0, r * 1.6, 0, 7); c.fill(); }
+  c.fillStyle = color; c.beginPath();
+  for (let i = 0; i < 10; i++) {
+    const ang = -Math.PI / 2 + i * Math.PI / 5;
+    const rad = (i % 2 === 0) ? r : r * 0.45;
+    const px = Math.cos(ang) * rad, py = Math.sin(ang) * rad;
+    if (i === 0) c.moveTo(px, py); else c.lineTo(px, py);
+  }
+  c.closePath(); c.fill(); c.restore();
+}
+function drawVectorRobot(c, cx, cy, dir, size) {
+  c.save(); c.translate(cx, cy); c.rotate(dir * Math.PI / 2);
+  c.fillStyle = '#e2e9ff'; roundRect(c, -size * .38, -size * .52, size * .76, size * .42, size * .12); c.fill();      // head
+  c.fillStyle = '#b9c6f2'; roundRect(c, -size * .42, -size * .12, size * .84, size * .58, size * .16); c.fill();      // body
+  c.fillStyle = '#23204a'; c.beginPath(); c.arc(-size * .13, -size * .33, size * .07, 0, 7); c.arc(size * .13, -size * .33, size * .07, 0, 7); c.fill(); // eyes
+  c.strokeStyle = '#8f9cc9'; c.lineWidth = Math.max(2, size * .06);
+  c.beginPath(); c.moveTo(0, -size * .52); c.lineTo(0, -size * .66); c.stroke();
+  c.fillStyle = '#ff6b6b'; c.beginPath(); c.arc(0, -size * .7, size * .08, 0, 7); c.fill();
+  c.fillStyle = '#7c8bc0'; roundRect(c, -size * .46, size * .46, size * .3, size * .14, size * .06); c.fill();
+  roundRect(c, size * .16, size * .46, size * .3, size * .14, size * .06); c.fill();
+  c.restore();
+}
 
 /* ---------- executor ---------- */
 const sleep = ms => new Promise(r => setTimeout(r, ms));
@@ -2170,7 +2198,7 @@ const MISSIONS = [
   } },
   { id: 'm7', ico: '🤖', title: 'Robot Thinker', xp: 15, desc: 'Make your sprite decide: add an "if near a star" block to your program.', check: p => p.some(b => b.id === 'ifNearStar') },
   { id: 'm8', ico: '🌀', title: 'Loop Legend', xp: 15, desc: 'Loop it big: use a repeat block with 8 or more times.', check: p => p.some(b => b.id === 'repeat' && b.vals.times >= 8) },
-  { id: 'm9', ico: '⭐', title: 'Star Champion', xp: 20, desc: 'Collect 6 stars in a single run — keep moving!', check: (p, out) => out.stars >= 6 },
+  { id: 'm9', ico: '⭐', title: 'Star Champion', xp: 20, desc: 'Collect 4 stars in a single run — keep moving!', check: (p, out) => out.stars >= 4 },
   { id: 'm10', ico: '🏃', title: 'Speed Runner', xp: 20, desc: 'Run 10 programs in total — practice makes perfect.', check: () => state.runs >= 10 }
 ];
 function renderQuests() {
@@ -2922,11 +2950,9 @@ function advCpDraw() {
     ctx.font = '30px serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
     ctx.fillText('🌳', o[0] * 56 + 28, o[1] * 56 + 28);
   });
-  ctx.font = '42px serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-  ctx.fillText('⭐', 4 * 56 + 28, 0 * 56 + 28);
+  drawStarShape(ctx, 4 * 56 + 28, 0 * 56 + 28, 17, '#ffd166', true);
   const c = ADV.cp;
-  ctx.save(); ctx.translate(c.x * 56 + 28, c.y * 56 + 28); ctx.rotate(c.dir * Math.PI / 2);
-  ctx.font = '38px serif'; ctx.fillText('🤖', 0, 0); ctx.restore();
+  drawVectorRobot(ctx, c.x * 56 + 28, c.y * 56 + 28, c.dir, 38);
   const fx = c.x * 56 + 28 + [0, 1, 0, -1][c.dir] * 26, fy = c.y * 56 + 28 + [-1, 0, 1, 0][c.dir] * 26;
   ctx.fillStyle = '#7c5cff'; ctx.beginPath(); ctx.arc(fx, fy, 6, 0, 7); ctx.fill();
 }
@@ -3390,6 +3416,18 @@ function refreshMusicBtn() {
   if (b) { b.textContent = MUSIC.on ? '🎵' : '🔇'; b.classList.toggle('muted', !MUSIC.on); b.setAttribute('aria-pressed', MUSIC.on ? 'true' : 'false'); }
 }
 function firstMusicGesture() { startMusic(); }
+function detectEmojiFont() {
+  try {
+    const cv = document.createElement('canvas'); cv.width = 24; cv.height = 24;
+    const c = cv.getContext('2d');
+    c.font = '20px serif'; c.textAlign = 'center'; c.textBaseline = 'middle';
+    c.fillText('🦊', 12, 12);
+    const d = c.getImageData(0, 0, 24, 24).data;
+    let colored = 0;
+    for (let i = 0; i < d.length; i += 4) { if (d[i + 3] > 0 && (d[i] || d[i + 1] || d[i + 2])) colored++; }
+    state.emojiMissing = colored < 30;
+  } catch (e) { state.emojiMissing = false; }
+}
 
 
 /* ============================================================
@@ -3985,11 +4023,9 @@ function skyCpDraw() {
     ctx.fillStyle = '#b9c4e8'; ctx.fillRect(o[0] * 56 + 3, o[1] * 56 + 3, 50, 50);
     ctx.fillStyle = '#8f9cc9'; ctx.beginPath(); ctx.moveTo(o[0] * 56 + 3, o[1] * 56 + 53); ctx.lineTo(o[0] * 56 + 28, o[1] * 56 + 3); ctx.lineTo(o[0] * 56 + 53, o[1] * 56 + 53); ctx.closePath(); ctx.fill();
   });
-  ctx.font = '42px serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-  ctx.fillText('⭐', 6 * 56 + 28, 1 * 56 + 28);
+  drawStarShape(ctx, 6 * 56 + 28, 1 * 56 + 28, 17, '#ffd166', true);
   const c = SKY.cp;
-  ctx.save(); ctx.translate(c.x * 56 + 28, c.y * 56 + 28); ctx.rotate(c.dir * Math.PI / 2);
-  ctx.font = '38px serif'; ctx.fillText('🤖', 0, 0); ctx.restore();
+  drawVectorRobot(ctx, c.x * 56 + 28, c.y * 56 + 28, c.dir, 38);
   const fx = c.x * 56 + 28 + [0, 1, 0, -1][c.dir] * 26, fy = c.y * 56 + 28 + [-1, 0, 1, 0][c.dir] * 26;
   ctx.fillStyle = '#7c5cff'; ctx.beginPath(); ctx.arc(fx, fy, 6, 0, 7); ctx.fill();
 };
@@ -4237,7 +4273,7 @@ const ART = {
       else if (tt === 'C') { drawShadow(c, cx, cy, CELL); c.font = (CELL + 4) + 'px serif'; c.fillText('🎁', cx, cy + Math.sin(t / 400) * 1.5); }
       else if (tt === '*') ART.gate(c, cx, cy, CELL, t);
       else if (tt === 'o') { const i = STONES.findIndex(s => s.x === x && s.y === y); drawShadow(c, cx, cy, CELL); c.save(); c.globalAlpha = .8 + .2 * Math.sin(t / 320 + x); c.font = (CELL + 2) + 'px serif'; c.fillText(STONE_SYMS[i], cx, cy); c.restore(); }
-      else if (tt === 'm') { drawShadow(c, cx, cy, CELL); c.font = (CELL + 2) + 'px serif'; c.fillText(adv.lanternDone && false ? '🎵' : '🎵', cx, cy); }
+      else if (tt === 'm') { drawShadow(c, cx, cy, CELL); c.font = (CELL + 2) + 'px serif'; c.fillText('🎵', cx, cy); }
       else if (tt === 'L') { drawShadow(c, cx, cy, CELL); c.font = (CELL + 2) + 'px serif'; c.fillText(adv.lanternDone ? '🏮' : '🪔', cx, cy + (adv.lanternDone ? Math.sin(t / 300) * 2 : 0)); }
       else if (tt === 'a') { drawShadow(c, cx, cy, CELL); c.font = (CELL + 2) + 'px serif'; c.fillText('🍎', cx, cy + Math.sin(t / 380 + x) * 1.5); }
       else if (tt === 'S') { drawShadow(c, cx, cy, CELL); c.font = (CELL + 4) + 'px serif'; c.fillText('🐿️', cx, cy + Math.sin(t / 450) * 2); }
@@ -4430,6 +4466,11 @@ updateStreakNow();
 renderDaily();
 refreshMusicBtn();
 requestPersistentStorage();
+detectEmojiFont();
+if (state.emojiMissing && !state._emojiTip) {
+  state._emojiTip = true; saveState();
+  setTimeout(() => toast('💡 Tip: your device seems to be missing emoji fonts — Koda now draws its animals and stars with shapes, but installing “Noto Color Emoji” makes everything prettier!'), 3000);
+}
 window.addEventListener('koda:storage-warning', showStorageBanner);
 renderLearningLog();
 updateRegionLearn();
