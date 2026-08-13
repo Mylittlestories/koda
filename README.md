@@ -1,9 +1,8 @@
 # 🦊 Koda — Learn by Making
 
-<!--
-  TODO (once the repo is public): replace YOUR-USERNAME in the badge URLs below
-  with your real GitHub username, then delete this comment.
--->
+> ## ▶️ **Play the live app:** https://mylittlestories.github.io/koda/ <br>
+> The landing page (https://mylittlestories.github.io/koda/) is the front door — the app itself is at https://mylittlestories.github.io/koda/app.html
+
 [![Build](https://github.com/Mylittlestories/koda/actions/workflows/build-desktop.yml/badge.svg)](https://github.com/Mylittlestories/koda/actions)
 [![Pages](https://github.com/Mylittlestories/koda/actions/workflows/deploy-pages.yml/badge.svg)](https://github.com/Mylittlestories/koda/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
