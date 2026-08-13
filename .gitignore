@@ -3,7 +3,6 @@ node_modules/
 packaging/electron/node_modules/
 packaging/electron/dist/
 packaging/electron/app/
-packaging/electron/package-lock.json
 
 # OS cruft
 .DS_Store
