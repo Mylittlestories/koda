@@ -2,6 +2,17 @@
 
 ## 1.0.0-beta.2 (2026-08-13) · © DRVsoft — bug-fix release
 
+**Critical fix: visitors were stuck on the old version**
+- The PWA service worker was **cache-first** with a never-bumped cache (`koda-v1`): browsers
+  that visited once kept being served the *old* app.html forever, so the vector-rendering
+  fixes never reached them. Symptoms: "the bug is still there" despite the deploy.
+- **New SW: pages are network-first** (always fetch the newest app when online; cache is
+  only an offline fallback) and the cache is bumped to `koda-v2` (old caches auto-deleted).
+- Verified in a real browser: install old SW → cache old app → deploy new app+SW → revisit
+  shows the **new** app. Offline fallback preserved.
+- Added a visible **version (v1.0.0-beta.2)** in the About box + `window.KODA_VERSION` so you
+  can confirm which build you're on.
+
 **Fixed (found via a real-browser pixel test suite)**
 - **Code Playground stage now works without emoji fonts**: stars and the fox are drawn as
   vector shapes (was 100% emoji glyphs — on devices without a color-emoji font the results

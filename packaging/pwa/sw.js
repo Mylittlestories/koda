@@ -1,6 +1,8 @@
-/* Koda service worker — makes the app work offline once visited (PWA).
-   index.html already probes for sw.js and registers it automatically when present. */
-const CACHE = 'koda-v1';
+/* Koda service worker — offline support (PWA).
+   IMPORTANT: pages are NETWORK-FIRST, so visitors always get the newest app.html
+   when online; the cache is only an offline fallback. Bump CACHE when the app
+   changes structurally so stale entries are wiped. */
+const CACHE = 'koda-v2';
 
 self.addEventListener('install', (e) => {
   e.waitUntil(
@@ -18,16 +20,37 @@ self.addEventListener('activate', (e) => {
 
 self.addEventListener('fetch', (e) => {
   if (e.request.method !== 'GET') return;
-  e.respondWith(
-    caches.match(e.request).then((hit) =>
-      hit ||
+  const url = new URL(e.request.url);
+  const isPage = e.request.mode === 'navigate' ||
+    (url.pathname.endsWith('.html') || url.pathname.endsWith('/'));
+
+  if (isPage) {
+    /* Network-first for pages: fresh app when online, cached copy when offline. */
+    e.respondWith(
       fetch(e.request)
         .then((res) => {
           const copy = res.clone();
           caches.open(CACHE).then((c) => c.put(e.request, copy));
           return res;
         })
-        .catch(() => caches.match('./index.html'))
-    )
+        .catch(() =>
+          caches.match(e.request).then((hit) => hit || caches.match('./index.html'))
+        )
+    );
+    return;
+  }
+
+  /* Assets: stale-while-revalidate (fast, refreshed in background). */
+  e.respondWith(
+    caches.match(e.request).then((hit) => {
+      const net = fetch(e.request)
+        .then((res) => {
+          const copy = res.clone();
+          caches.open(CACHE).then((c) => c.put(e.request, copy));
+          return res;
+        })
+        .catch(() => hit);
+      return hit || net;
+    })
   );
 });
