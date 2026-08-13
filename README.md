@@ -4,8 +4,8 @@
   TODO (once the repo is public): replace YOUR-USERNAME in the badge URLs below
   with your real GitHub username, then delete this comment.
 -->
-[![Build](https://github.com/YOUR-USERNAME/koda/actions/workflows/build-desktop.yml/badge.svg)](https://github.com/YOUR-USERNAME/koda/actions)
-[![Pages](https://github.com/YOUR-USERNAME/koda/actions/workflows/deploy-pages.yml/badge.svg)](https://github.com/YOUR-USERNAME/koda/actions)
+[![Build](https://github.com/Mylittlestories/koda/actions/workflows/build-desktop.yml/badge.svg)](https://github.com/Mylittlestories/koda/actions)
+[![Pages](https://github.com/Mylittlestories/koda/actions/workflows/deploy-pages.yml/badge.svg)](https://github.com/Mylittlestories/koda/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![PRs welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](docs/CONTRIBUTING.md)
 
